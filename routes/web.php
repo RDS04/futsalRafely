@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BokingController;
 use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('costumers.dashboard-padang');
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -35,4 +36,13 @@ Route::controller(CostumerController::class)->middleware('auth')->group(function
     Route::get('/dashboard/padang', 'padang')->name('costumers.dashboard.padang');
     Route::get('/dashboard/sijunjung', 'sijunjung')->name('costumers.dashboard.sijunjung');
     Route::get('/dashboard/bukittinggi', 'bukittinggi')->name('costumers.dashboard.bukittinggi');
+});
+
+Route::controller(BokingController::class)->prefix('boking')->group(function () {
+    Route::get('/', 'bookingForm')->name('boking.form');
+    Route::get('/bokingForm', 'bookingForm')->name('boking.form');
+    Route::post('/bokingForm', 'store')->name('boking.store');
+
+    Route::get('/payment', 'payment')->name('show.payment');
+
 });

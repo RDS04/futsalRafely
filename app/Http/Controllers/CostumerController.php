@@ -18,4 +18,6 @@ class CostumerController extends Controller
     {
         return view('costumers.dashboard-bukittinggi');
     }
+
+  
 }
