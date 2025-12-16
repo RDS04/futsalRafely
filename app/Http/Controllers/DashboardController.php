@@ -18,17 +18,34 @@ class DashboardController extends Controller
     
     public function adminPadang()
     {
-        return view('dashboardAdm.adm-satu');
+        return view('dashboardAdm.admSatu.dashboard');
     }
     public function adminSijunjung()
     {
-        return view('dashboardAdm.adm-dua');
+        return view('dashboardAdm.admDua.dashboard');
     }
     public function adminBukittinggi()
     {
-        return view('dashboardAdm.adm-tiga');
+        return view('dashboardAdm.admTiga.dashboard');
     }
 
+    
+
+
+
+    public function app(){
+        return view('layouts.app');
+    }
+    public function footer(){
+        return view('layouts.footer');
+    }
+    public function header(){
+        return view('layouts.header');
+    }
+    public function sidebar(){
+        return view('layouts.sidebar');
+    }
+ 
 
 
     

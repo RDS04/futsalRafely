@@ -9,3 +9,35 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Sidebar Scroll Fix */
+.layout-fixed .app-sidebar {
+    position: sticky;
+    top: 0;
+    bottom: 0;
+    max-height: 100vh;
+}
+
+.layout-fixed .app-sidebar .sidebar-wrapper {
+    height: calc(100vh - 80px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Scrollbar styling untuk sidebar */
+.sidebar-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
