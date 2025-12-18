@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BokingController;
 use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InputLapanganController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,12 +19,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/register', 'Register')->name('register');
     Route::post('/register', 'store')->name('register.store');
     Route::post('/logout', 'logout')->name('logout');
-    
+
     Route::get('/admin/register', 'adminRegister')->name('admin.register.show');
     Route::post('/admin/register', 'storeAdmin')->name('admin.register.store');
-
-    
-    
 });
 Route::controller(DashboardController::class)->middleware('admin')->prefix('admin')->group(function () {
     Route::get('/dashboard', 'homeAdmin')->name('admin.dashboard');
@@ -44,5 +42,9 @@ Route::controller(BokingController::class)->prefix('boking')->group(function () 
     Route::post('/bokingForm', 'store')->name('boking.store');
 
     Route::get('/payment', 'payment')->name('show.payment');
+});
 
+Route::controller(InputLapanganController::class)->middleware('admin')->prefix('input-lapangan')->group(function () {
+    Route::get('/inputLapangan', 'inputLapangan')->name('inputLapangan.padang');
+    Route::post('/inputLapangan', 'store')->name('lapangan.store');
 });

@@ -24,9 +24,6 @@
 
         </a>
     </div>
-
-
-
     <div class="sidebar-wrapper">
         <nav class="mt-2">
 
@@ -55,43 +52,6 @@
                         <i class="fa-solid fa-angle-right ms-auto"></i>
                     </a>
                 </li>
-
-                <li class="nav-item menu-open">
-                    <a href="#" class="nav-link active">
-                        <i class="nav-icon bi bi-speedometer"></i>
-                        <p>Master Latihan <i class="nav-arrow bi bi-chevron-right"></i></p>
-                    </a>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ url('pendaftaran') }}" class="nav-link active">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Latihan 1</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('dosens') }}" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Data Dosen</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('products') }}" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Crud Produk</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('anggota') }}" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Anggota</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-
-
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-box-seam-fill"></i>
@@ -100,9 +60,20 @@
 
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ url('input_data_dosen') }}" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Tugas</p>
+                            <a
+                                href="
+                            {{ 
+                                $region == 'padang' ? route('inputLapangan.padang') :
+                                ($region == 'sijunjung' ? route('inputLapangan.sijunjung') :
+                                ($region == 'bukittinggi' ? route('inputLapangan.bukittinggi') : 'Tidak ada'))
+                            }}"
+                                class="nav-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
+                                </svg>
+
+                                <p>Input Lapangan</p>
+                                <i class="fa-solid fa-angle-right ms-auto"></i>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -339,9 +310,6 @@
                     </ul>
                 </li>
             </ul>
-            <!-- End Sidebar Menu -->
         </nav>
     </div>
-    <!-- End Sidebar Wrapper -->
 </aside>
-<!-- End Sidebar -->

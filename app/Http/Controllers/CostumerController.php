@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lapangan;
 use Illuminate\Http\Request;
 
 class CostumerController extends Controller
 {
     public function padang()
     {
-        return view('costumers.dashboard-padang');
+        $lapangan = Lapangan::all();
+        return view('costumers.dashboard-padang', compact('lapangan'));
     }
     public function sijunjung()
     {

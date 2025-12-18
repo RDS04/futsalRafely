@@ -192,59 +192,100 @@
             </div>
         </section>
         <!-- Featured Venues Section -->
-        <section class="max-w-5xl mx-auto py-12" id="lapanganUnggulan">
-            <h2 class="text-3xl text-gray-800 font-bold text-center mb-6">Lapangan Unggulan</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Venue Card 1 -->
-                <div
-                    class="bg-white rounded-lg overflow-hidden shadow-md transition-transform transform hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=500&h=220&fit=crop"
-                        alt="Futsal Lapangan 1" class="w-full h-52 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Futsal Arena Premium</h3>
-                        <div class="text-gray-600 mb-2">📍 Jl. Merdeka No. 45, Jakarta</div>
-                        <div class="text-yellow-500 mb-2">⭐ 4.8 (245 ulasan)</div>
-                        <div class="text-blue-500 font-bold mb-4">Rp 150.000/jam</div>
-                        <a href="{{ route('boking.form') }}">
-                            <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg hover:scale-105 transition duration-300">Pesan
-                                Sekarang</button>
-                        </a>
-                    </div>
-                </div>
+        <section class="max-w-6xl mx-auto py-12" id="lapanganUnggulan">
+            <h2 class="text-3xl text-gray-800 font-bold text-center mb-8">
+                Lapangan Unggulan
+            </h2>
 
-                <!-- Venue Card 2 -->
-                <div
-                    class="bg-white rounded-lg overflow-hidden shadow-md transition-transform transform hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1488747807830-63789f68bb65?w=500&h=220&fit=crop"
-                        alt="Futsal Lapangan 2" class="w-full h-52 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Futsal Center Elite</h3>
-                        <div class="text-gray-600 mb-2">📍 Jl. Sudirman No. 78, Bandung</div>
-                        <div class="text-yellow-500 mb-2">⭐ 4.7 (198 ulasan)</div>
-                        <div class="text-blue-500 font-bold mb-4">Rp 120.000/jam</div>
-                        <button
-                            class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg hover:scale-105 transition duration-300">Pesan
-                            Sekarang</button>
+            @if ($lapangan->isEmpty())
+            {{-- EMPTY STATE --}}
+            <div class="min-h-[50vh] flex items-center justify-center px-4">
+                <div class="max-w-md w-full text-center bg-white rounded-2xl shadow-lg p-8 border">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                            ⚽
+                        </div>
                     </div>
-                </div>
 
-                <!-- Venue Card 3 -->
-                <div
-                    class="bg-white rounded-lg overflow-hidden shadow-md transition-transform transform hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1577092918613-eea2f8fd51db?w=500&h=220&fit=crop"
-                        alt="Futsal Lapangan 3" class="w-full h-52 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Futsal Stadium Pro</h3>
-                        <div class="text-gray-600 mb-2">📍 Jl. Ahmad Yani No. 12, Surabaya</div>
-                        <div class="text-yellow-500 mb-2">⭐ 4.9 (312 ulasan)</div>
-                        <div class="text-blue-500 font-bold mb-4">Rp 180.000/jam</div>
-                        <button
-                            class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg hover:scale-105 transition duration-300">Pesan
-                            Sekarang</button>
-                    </div>
+                    <h1 class="text-2xl font-semibold text-gray-800 mb-2">
+                        Lapangan Belum Tersedia
+                    </h1>
+
+                    <p class="text-gray-500 mb-6">
+                        Admin belum menambahkan data lapangan untuk region ini.
+                    </p>
+
+                    <a href="/" class="px-5 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700">
+                        Kembali
+                    </a>
                 </div>
             </div>
+            @else
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach ($lapangan as $lp)
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+
+                    {{-- IMAGE --}}
+                    <div class="relative">
+                        <img
+                            src="{{ asset('storage/' . $lp->gambar) }}"
+                            class="w-full h-52 object-cover"
+                            alt="{{ $lp->nama_lapangan }}">
+
+                        {{-- STATUS BADGE --}}
+                        @if ($lp->status === 'tersedia')
+                        <span class="absolute top-3 left-3 bg-green-600 text-white text-xs px-3 py-1 rounded-full">
+                            Tersedia
+                        </span>
+                        @else
+                        <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">
+                            Tidak Tersedia
+                        </span>
+                        @endif
+                    </div>
+
+                    {{-- CONTENT --}}
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            {{ $lp->nama_lapangan }}
+                        </h3>
+
+                        <p class="text-gray-500 text-sm mb-2">
+                            Jenis: {{ $lp->jenisLapangan }}
+                        </p>
+
+                        <p class="text-blue-600 font-bold mb-4">
+                            Rp {{ number_format($lp->harga, 0, ',', '.') }}/jam
+                        </p>
+                        <i>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden text-ellipsis">
+                                {{ Str::limit($lp->deskripsi, 100, '...') }}
+                            </p>
+                        </i>
+
+                        {{-- BUTTON --}}
+                        @if ($lp->status === 'tersedia')
+                        <a href="{{ route('boking.form', $lp->id) }}">
+                            <button
+                                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                                Pesan Sekarang
+                            </button>
+                        </a>
+                        @else
+                        <button
+                            class="w-full bg-gray-300 text-gray-600 py-2 rounded-lg cursor-not-allowed">
+                            Tidak Bisa Dipesan
+                        </button>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @endif
         </section>
+
+
 
         <!-- Latest Events Section -->
         <section class="max-w-5xl mx-auto py-12 px-4" id="event">

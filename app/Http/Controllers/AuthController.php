@@ -128,7 +128,6 @@ class AuthController extends Controller
         return redirect()->route('loginAdmin')->with('success', 'Registrasi admin berhasil.');
     }
 
-
     public function logout(Request $request)
     {
         // Logout dari semua guard

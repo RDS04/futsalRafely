@@ -16,4 +16,5 @@ class Boking extends Model
         'lapangan',
         'catatan',
     ];
+    
 }
