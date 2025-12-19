@@ -55,9 +55,8 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-box-seam-fill"></i>
-                        <p>Data Data Tugas <i class="nav-arrow bi bi-chevron-right"></i></p>
+                        <p>Data Lapangan<i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
-
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a
@@ -68,90 +67,39 @@
                                 ($region == 'bukittinggi' ? route('inputLapangan.bukittinggi') : 'Tidak ada'))
                             }}"
                                 class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
-                                </svg>
 
                                 <p>Input Lapangan</p>
                                 <i class="fa-solid fa-angle-right ms-auto"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./widgets/info-box.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Info Box</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./widgets/cards.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Cards</p>
+                            <a href="{{ route('lapangan.daftar') }}" class="nav-link">
+                                <p>List Lapangan</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-clipboard-fill"></i>
-                        <p>
-                            Layout Options
-                            <span class="nav-badge badge text-bg-secondary me-3">6</span>
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="./layout/sidebar-mini.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Sidebar Mini</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./layout/collapsed-sidebar.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Sidebar Mini <small>+ Collapsed</small></p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./layout/logo-switch.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Sidebar Mini <small>+ Logo Switch</small></p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./layout/layout-rtl.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Layout RTL</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-tree-fill"></i>
-                        <p>UI Elements <i class="nav-arrow bi bi-chevron-right"></i></p>
+                        <p>Informasi Lainnya<i class="nav-arrow bi bi-chevron-right"></i></p>
                     </a>
 
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./UI/general.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>General</p>
+                            <a href="{{ route('lapangan.slider') }}" class="nav-link">
+                                <p>Slider Information</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./UI/icons.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Icons</p>
+                            <a href="{{ route('lapangan.event') }}" class="nav-link">
+                                
+                                <p>Events</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./UI/timeline.html" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Timeline</p>
+                            <a href="./UI/buttons.html" class="nav-link">
+                                <p>Promo</p>
                             </a>
                         </li>
                     </ul>

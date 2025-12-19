@@ -65,12 +65,12 @@ function showDateDetail(dateKey) {
 
     if (bookings.length === 0) {
         detailHTML += '<p class="text-green-600 font-semibold mt-2">✓ Semua lapangan kosong</p>';
-    } else {
+    } 
+    else {
         bookings.forEach((booking, idx) => {
             detailHTML += `<p class="text-red-600 mt-2">Lapangan ${idx + 1}: Terpakai s/d ${booking.endTime}</p>`;
         });
     }
-
     document.getElementById('dateDetail').innerHTML = detailHTML;
 }
 
@@ -91,12 +91,7 @@ function nextMonth() {
     }
     renderCalendar();
 }
-
 renderCalendar();
-
-
-
-
 
 let currentSlide = 0;
 const dots = document.querySelectorAll('.dot');
@@ -147,6 +142,22 @@ function resetAutoSlide() {
     clearInterval(autoSlideInterval);
     startAutoSlide();
 }
-
-// Start auto-slide when page loads
 startAutoSlide();
+
+document.addEventListener('DOMContentLoaded', function () {
+    const profileBtn = document.getElementById('profileBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const dropdownWrapper = document.getElementById('profileDropdown');
+
+    profileBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!dropdownWrapper.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+    
+});

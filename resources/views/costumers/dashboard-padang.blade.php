@@ -25,7 +25,6 @@
     .slider-btn:hover {
         background-color: #0ea5e9;
         color: white;
-        transform: translateY(-50%) scale(1.1);
     }
 </style>
 </head>
@@ -66,9 +65,9 @@
 
             @auth
             <!-- KALAU SUDAH LOGIN -->
-            <div x-data="{ open: false }" class="relative">
+            <div class="relative" id="profileDropdown">
                 <!-- PROFILE BUTTON -->
-                <button @click="open = !open"
+                <button id="profileBtn"
                     class="flex items-center gap-2 bg-gray-800 bg-opacity-50 p-2 rounded-lg backdrop-blur hover:bg-gray-700 transition">
 
                     <img src="{{ Auth::user()->profile ?? 'https://ui-avatars.com/api/?name=' . Auth::user()->name }}"
@@ -81,10 +80,8 @@
                 </button>
 
                 <!-- DROPDOWN MENU -->
-                <div x-show="open"
-                    @click.away="open = false"
-                    x-transition
-                    class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg overflow-hidden z-50">
+                <div id="dropdownMenu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg overflow-hidden z-50">
 
                     <a href="{{ route('show.payment') }}"
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
@@ -95,7 +92,9 @@
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
                         Edit Profil
                     </a>
+
                     <hr class="my-2">
+
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
@@ -105,6 +104,7 @@
                     </form>
                 </div>
             </div>
+
             @endauth
         </div>
 
@@ -114,19 +114,17 @@
         <section class="mt-8 mb-8 px-4">
             <div class="relative w-11/12 mx-auto overflow-hidden rounded-lg shadow-lg slider-container mt-8">
                 <button onclick="moveSlide(-1)"
-                    class="slider-btn absolute left-4 top-1/2 transform -translate-y-1/2 bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❮</button>
+                    class="slider-btn absolute left-4 top-1/2  bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❮</button>
                 <ul class="flex slider-track" id="sliderTrack">
+                  @foreach ($sliders as $slide)
                     <li class="min-w-full">
-                        <img src="https://event.kontan.co.id/futsal/assets/img/slider-banner-futsal.jpg"
+                        <img src="{{ asset('storage/' . $slide->gambar) }}"
                             alt="Futsal Banner 1" class="w-full h-[600px] object-cover">
                     </li>
-                    <li class="min-w-full">
-                        <img src="https://s-light.tiket.photos/t/01E25EBZS3W0FY9GTG6C42E1SE/rsfit19201280gsm/events/2022/09/01/0a4c6300-54cf-4b5e-a6b7-851c209485db-1662016870217-3565eba94324d2ee0f848f7fbc4152f4.jpg"
-                            alt="Futsal Banner 2" class="w-full h-[600px] object-cover">
-                    </li>
+                    @endforeach
                 </ul>
                 <button onclick="moveSlide(1)"
-                    class="slider-btn absolute right-4 top-1/2 transform -translate-y-1/2 bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❯</button>
+                    class="slider-btn absolute right-4 top-1/2  bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❯</button>
             </div>
 
             <div class="flex justify-center gap-3 mt-6">
@@ -291,13 +289,13 @@
         <section class="max-w-5xl mx-auto py-12 px-4" id="event">
             <h2 class="text-3xl text-gray-800 font-bold text-center ">Event Terbaru</h2>
             <div class="space-y-6 ">
-                <!-- Event Card 2 -->
+                @foreach ($event as $ev) 
                 <div
                     class="bg-white shadow-md hover:shadow-xl transition-shadow rounded-lg overflow-hidden flex w-full">
                     <!-- FOTO (KIRI) -->
                     <div class="relative w-[400px] h-[200px]">
-                        <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=250&fit=crop"
-                            alt="Event 2" class="w-full h-full object-cover">
+                        <img src="{{ asset('storage/' . $ev->gambar) }}" alt="{{ $ev->judul }}"
+                            class="w-full h-full object-cover">
 
                         <span
                             class="absolute top-3 right-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -308,19 +306,18 @@
                     <!-- KETERANGAN (KANAN) -->
                     <div class="p-6 w-full flex flex-col justify-between">
                         <div class="flex flex-col w-100%">
-                            <h3 class="text-2xl font-bold text-teal-500 mb-3">Liga Futsal Cup 2024</h3>
+                            <h3 class="text-2xl font-bold text-teal-500 mb-3">{{ $ev->judul }}  </h3>
                             <div class="space-y-2 text-sm text-gray-600 mb-4">
-                                <div class="flex items-center gap-2">📅 <span>20 - 25 Februari 2024</span></div>
+                                <div class="flex items-center gap-2">📅 <span>{{ $ev->tanggal_mulai }} - {{ $ev->tanggal_selesai }}</span></div>
                             </div>
                             <p class="text-gray-600 text-sm text-justify leading-relaxed">
-                                Kompetisi futsal dengan hadiah menarik dan peserta dari berbagai kota besar di
-                                Indonesia. Saksikan pertandingan sengit antara tim-tim terbaik dengan kualitas bermain
-                                yang spektakuler dan penuh aksi.
+                               {{ Str::limit($ev->deskripsi, 150, '...') }}
                             </p>
                             <a href="#" class="text-teal-500 hover:underline">Selengkapnya →</a>
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
         </section>
     </main>
