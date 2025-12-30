@@ -8,7 +8,7 @@
                 <h1 class="m-0 fw-semibold">Tambah Lapangan Futsal</h1>
                 <small class="text-muted">Kelola data lapangan per region</small>
             </div>
-            <a href="{{ route('lapangan.daftar') }}" class="btn btn-info">
+            <a href="{{ route('lapangan.daftar.Lapangan') }}" class="btn btn-info">
                 <i class="fas fa-list"></i> Lihat Daftar Lapangan
             </a>
         </div>
@@ -104,7 +104,7 @@
 
                 {{-- FOOTER --}}
                 <div class="card-footer d-flex justify-content-end gap-2">
-                    <a href="{{ route('inputLapangan.padang') }}" class="btn btn-secondary">
+                    <a href="{{ route('inputLapangan.Lapangan') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" class="btn btn-primary">

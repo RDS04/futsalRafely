@@ -45,20 +45,20 @@ Route::controller(BokingController::class)->prefix('boking')->group(function () 
 });
 
 Route::controller(InputLapanganController::class)->middleware('admin')->prefix('input-lapangan')->group(function () {
-    Route::get('/inputLapangan', 'inputLapangan')->name('inputLapangan.padang');
-    Route::get('/daftarLapangan', 'daftarLapangan')->name('lapangan.daftar');
+    Route::get('/inputLapangan', 'inputLapangan')->name('inputLapangan.Lapangan');
+    Route::get('/daftarLapangan', 'daftarLapangan')->name('lapangan.daftar.Lapangan');
     Route::post('/inputLapangan', 'store')->name('lapangan.store');
     Route::get('/viewLapangan', 'viewLapangan')->name('lapangan.view');
     Route::get('/editLapangan/{id}', 'editLapangan')->name('lapangan.edit');
     Route::put('/updateLapangan/{id}', 'update')->name('lapangan.update');
     Route::delete('/deleteLapangan/{id}', 'destroy')->name('lapangan.destroy');
-
+    
     Route::get('/slider', 'slider')->name('lapangan.slider');
     Route::post('/slider', 'storeSlider')->name('lapangan.slider.store');
     Route::get('/slider/{id}/edit', 'editSlider')->name('lapangan.slider.edit');
     Route::put('/slider/{id}', 'updateSlider')->name('lapangan.slider.update');
     Route::delete('/slider/{id}', 'destroySlider')->name('lapangan.slider.destroy');
-
+    
     Route::get('/event', 'event')->name('lapangan.event');
     Route::post('/event', 'storeEvent')->name('lapangan.event.store');
     Route::get('/event/{id}/edit', 'editEvent')->name('lapangan.event.edit');

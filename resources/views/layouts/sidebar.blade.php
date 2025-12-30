@@ -62,18 +62,20 @@
                             <a
                                 href="
                             {{ 
-                                $region == 'padang' ? route('inputLapangan.padang') :
-                                ($region == 'sijunjung' ? route('inputLapangan.sijunjung') :
-                                ($region == 'bukittinggi' ? route('inputLapangan.bukittinggi') : 'Tidak ada'))
+                                $region == 'padang' ? route('inputLapangan.Lapangan') :
+                                ($region == 'sijunjung' ? route('inputLapangan.Lapangan') :
+                                ($region == 'bukittinggi' ? route('inputLapangan.Lapangan') : 'Tidak ada'))
                             }}"
                                 class="nav-link">
-
                                 <p>Input Lapangan</p>
-                                <i class="fa-solid fa-angle-right ms-auto"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('lapangan.daftar') }}" class="nav-link">
+                            <a href="{{
+                                $region == 'padang' ? route('lapangan.daftar.Lapangan') :
+                                ($region == 'sijunjung' ? route('lapangan.daftar.Lapangan') :
+                                ($region == 'bukittinggi' ? route('lapangan.daftar.Lapangan') : 'Tidak ada'))
+                            }}" class="nav-link">
                                 <p>List Lapangan</p>
                             </a>
                         </li>
@@ -87,12 +89,20 @@
 
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('lapangan.slider') }}" class="nav-link">
+                            <a href="{{ 
+                                $region == 'padang' ? route('lapangan.slider') :
+                                ($region == 'sijunjung' ? route('lapangan.slider') :
+                                ($region == 'bukittinggi' ? route('lapangan.slider ') : 'Tidak ada'))
+                            }}" class="nav-link">
                                 <p>Slider Information</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('lapangan.event') }}" class="nav-link">
+                            <a href="{{ 
+                                $region == 'padang' ? route('lapangan.event') :
+                                ($region == 'sijunjung' ? route('lapangan.event') :
+                                ($region == 'bukittinggi' ? route('lapangan.event') : 'Tidak ada'))
+                            }}" class="nav-link">
                                 
                                 <p>Events</p>
                             </a>

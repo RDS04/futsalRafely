@@ -10,16 +10,29 @@ use Illuminate\Support\Facades\Storage;
 
 class InputLapanganController extends Controller
 {
+    /**
+     * Menentukan folder admin berdasarkan user admin yang login
+     */
+    private function getAdminFolder()
+    {
+        // Jika ingin membedakan per admin, bisa menggunakan auth()->guard('admin')->user()->region
+        // Untuk sekarang, gunakan admSatu sebagai default atau bisa dari session
+        $adminFolder = session('admin_folder', 'admSatu');
+        return $adminFolder;
+    }
+
     public function inputLapangan()
     {
         $lapangan = Lapangan::all();
-        return view('dashboardAdm.admSatu.inputLapangan', compact('lapangan'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.inputLapangan", compact('lapangan'));
     }
 
     public function daftarLapangan()
     {
         $lapangan = Lapangan::all();
-        return view('dashboardAdm.admSatu.daftarLapangan', compact('lapangan'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.daftarLapangan", compact('lapangan'));
     }
 
     public function store(Request $request)
@@ -38,27 +51,29 @@ class InputLapanganController extends Controller
         // =====================
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            // contoh: lapangan_images/padang/xxxxx.jpg
+            // contoh: lapangan_images/Lapangan/xxxxx.jpg
             $path = $file->store('lapangan_images', 'public');
             $validated['gambar'] = $path;
         }
 
         Lapangan::create($validated);
         return redirect()
-            ->route('inputLapangan.padang')
+            ->route('inputLapangan.Lapangan')
             ->with('success', 'Lapangan berhasil ditambahkan.');
     }
 
     public function viewLapangan()
     {
         $lapangan = Lapangan::all();
-        return view('dashboardAdm.admSatu.view', compact('lapangan'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.view", compact('lapangan'));
     }
 
     public function editLapangan($id)
     {
         $lapangan = Lapangan::findOrFail($id);
-        return view('dashboardAdm.admSatu.edit', compact('lapangan'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.edit", compact('lapangan'));
     }
     public function destroy($id)
     {
@@ -87,7 +102,8 @@ class InputLapanganController extends Controller
     public function slider()
     {
         $slider = Slider::all();
-        return view('dashboardAdm.admSatu.slider', compact('slider'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.slider", compact('slider'));
     }
 
     public function storeSlider(Request $request)
@@ -97,7 +113,7 @@ class InputLapanganController extends Controller
         ]);
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            // contoh: lapangan_images/padang/xxxxx.jpg
+            // contoh: lapangan_images/Lapangan/xxxxx.jpg
             $path = $file->store('lapangan_images', 'public');
             $validated['gambar'] = $path;
         }
@@ -110,7 +126,8 @@ class InputLapanganController extends Controller
     public function editSlider($id)
     {
         $slider = Slider::findOrFail($id);
-        return view('dashboardAdm.admSatu.editSlider', compact('slider'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.editSlider", compact('slider'));
     }
 
     public function updateSlider(Request $request, $id)
@@ -156,7 +173,8 @@ class InputLapanganController extends Controller
     public function event()
     {
         $events = Event::all();
-        return view('dashboardAdm.admSatu.event', compact('events'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.event", compact('events'));
     }
     public function storeEvent(Request $request)
     {
@@ -170,7 +188,7 @@ class InputLapanganController extends Controller
         ]);
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            // contoh: lapangan_images/padang/xxxxx.jpg
+            // contoh: lapangan_images/Lapangan/xxxxx.jpg
             $path = $file->store('event', 'public');
             $validated['gambar'] = $path;
         }
@@ -183,7 +201,8 @@ class InputLapanganController extends Controller
     public function editEvent($id)
     {
         $event = Event::findOrFail($id);
-        return view('dashboardAdm.admSatu.editEvent', compact('event'));
+        $adminFolder = $this->getAdminFolder();
+        return view("dashboardAdm.{$adminFolder}.editEvent", compact('event'));
     }
 
     public function updateEvent(Request $request, $id)

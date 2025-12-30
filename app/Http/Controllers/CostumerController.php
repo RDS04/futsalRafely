@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lapangan;
 use App\Models\Event;
+use App\Models\Lapangan;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 

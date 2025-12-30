@@ -113,18 +113,16 @@
     <main class="min-h-screen bg-gray-100">
         <section class="mt-8 mb-8 px-4">
             <div class="relative w-11/12 mx-auto overflow-hidden rounded-lg shadow-lg slider-container mt-8">
-                <button onclick="moveSlide(-1)"
-                    class="slider-btn absolute left-4 top-1/2  bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❮</button>
-                <ul class="flex slider-track" id="sliderTrack">
-                  @foreach ($sliders as $slide)
-                    <li class="min-w-full">
-                        <img src="{{ asset('storage/' . $slide->gambar) }}"
-                            alt="Futsal Banner 1" class="w-full h-[600px] object-cover">
-                    </li>
-                    @endforeach
-                </ul>
-                <button onclick="moveSlide(1)"
-                    class="slider-btn absolute right-4 top-1/2  bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❯</button>
+                <button onclick="moveSlide(-1)" class="slider-btn absolute left-4 top-1/2  bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❮</button>
+                    <ul class="flex slider-track" id="sliderTrack">
+                        @foreach ($sliders as $slide)
+                        <li class="min-w-full">
+                            <img src="{{ asset('storage/' . $slide->gambar) }}"
+                                alt="Futsal Banner 1" class="w-full h-[600px] object-cover">
+                        </li>
+                        @endforeach
+                    </ul>
+                <button onclick="moveSlide(1)"class="slider-btn absolute right-4 top-1/2  bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl z-10">❯</button>
             </div>
 
             <div class="flex justify-center gap-3 mt-6">
@@ -289,7 +287,7 @@
         <section class="max-w-5xl mx-auto py-12 px-4" id="event">
             <h2 class="text-3xl text-gray-800 font-bold text-center ">Event Terbaru</h2>
             <div class="space-y-6 ">
-                @foreach ($event as $ev) 
+                @foreach ($event as $ev)
                 <div
                     class="bg-white shadow-md hover:shadow-xl transition-shadow rounded-lg overflow-hidden flex w-full">
                     <!-- FOTO (KIRI) -->
@@ -306,12 +304,12 @@
                     <!-- KETERANGAN (KANAN) -->
                     <div class="p-6 w-full flex flex-col justify-between">
                         <div class="flex flex-col w-100%">
-                            <h3 class="text-2xl font-bold text-teal-500 mb-3">{{ $ev->judul }}  </h3>
+                            <h3 class="text-2xl font-bold text-teal-500 mb-3">{{ $ev->judul }} </h3>
                             <div class="space-y-2 text-sm text-gray-600 mb-4">
                                 <div class="flex items-center gap-2">📅 <span>{{ $ev->tanggal_mulai }} - {{ $ev->tanggal_selesai }}</span></div>
                             </div>
                             <p class="text-gray-600 text-sm text-justify leading-relaxed">
-                               {{ Str::limit($ev->deskripsi, 150, '...') }}
+                                {{ Str::limit($ev->deskripsi, 150, '...') }}
                             </p>
                             <a href="#" class="text-teal-500 hover:underline">Selengkapnya →</a>
                         </div>
