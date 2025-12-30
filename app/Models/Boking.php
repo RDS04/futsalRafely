@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Boking extends Model
 {
@@ -15,6 +16,47 @@ class Boking extends Model
         'jam_selesai',
         'lapangan',
         'catatan',
+        'region',
+        'customer_id',
+        'lapangan_id',
+        'total_harga',
+        'status',
     ];
-    
+
+    protected $casts = [
+        'tanggal' => 'date',
+        'total_harga' => 'decimal:2',
+    ];
+
+    /**
+     * Relasi dengan Customer yang melakukan booking
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Costumers::class);
+    }
+
+    /**
+     * Relasi dengan Lapangan yang di-booking
+     */
+    public function lapanganData(): BelongsTo
+    {
+        return $this->belongsTo(Lapangan::class, 'lapangan_id');
+    }
+
+    /**
+     * Scope untuk filter berdasarkan region
+     */
+    public function scopeByRegion($query, $region)
+    {
+        return $query->where('region', $region);
+    }
+
+    /**
+     * Scope untuk filter berdasarkan customer
+     */
+    public function scopeByCustomer($query, $customerId)
+    {
+        return $query->where('customer_id', $customerId);
+    }
 }

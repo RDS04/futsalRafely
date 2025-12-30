@@ -12,6 +12,7 @@ class AdminMiddleware
 {
     /**
      * Handle an incoming request.
+     * Middleware ini memastikan user sudah login sebagai admin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */

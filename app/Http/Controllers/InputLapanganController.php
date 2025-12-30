@@ -7,30 +7,52 @@ use App\Models\Event;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class InputLapanganController extends Controller
 {
     /**
-     * Menentukan folder admin berdasarkan user admin yang login
+     * Get admin yang sedang login
+     */
+    protected function getAdmin()
+    {
+        return Auth::guard('admin')->user();
+    }
+
+    /**
+     * Get region admin yang sedang login
+     */
+    protected function getAdminRegion()
+    {
+        return $this->getAdmin()->region;
+    }
+
+    /**
+     * Get folder admin berdasarkan region
      */
     private function getAdminFolder()
     {
-        // Jika ingin membedakan per admin, bisa menggunakan auth()->guard('admin')->user()->region
-        // Untuk sekarang, gunakan admSatu sebagai default atau bisa dari session
-        $adminFolder = session('admin_folder', 'admSatu');
-        return $adminFolder;
+        $region = $this->getAdminRegion();
+        $folderMap = [
+            'padang' => 'admSatu',
+            'sijunjung' => 'admDua',
+            'bukittinggi' => 'admTiga',
+        ];
+        return $folderMap[$region] ?? 'admSatu';
     }
 
     public function inputLapangan()
     {
-        $lapangan = Lapangan::all();
+        $admin = $this->getAdmin();
+        $lapangan = Lapangan::byRegion($admin->region)->get();
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.inputLapangan", compact('lapangan'));
     }
 
     public function daftarLapangan()
     {
-        $lapangan = Lapangan::all();
+        $admin = $this->getAdmin();
+        $lapangan = Lapangan::byRegion($admin->region)->get();
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.daftarLapangan", compact('lapangan'));
     }
@@ -51,10 +73,14 @@ class InputLapanganController extends Controller
         // =====================
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            // contoh: lapangan_images/Lapangan/xxxxx.jpg
             $path = $file->store('lapangan_images', 'public');
             $validated['gambar'] = $path;
         }
+
+        // Tambah region dan admin_id otomatis
+        $admin = $this->getAdmin();
+        $validated['region'] = $admin->region;
+        $validated['admin_id'] = $admin->id;
 
         Lapangan::create($validated);
         return redirect()
@@ -64,20 +90,31 @@ class InputLapanganController extends Controller
 
     public function viewLapangan()
     {
-        $lapangan = Lapangan::all();
+        $admin = $this->getAdmin();
+        $lapangan = Lapangan::byRegion($admin->region)->get();
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.view", compact('lapangan'));
     }
 
     public function editLapangan($id)
     {
-        $lapangan = Lapangan::findOrFail($id);
+        $admin = $this->getAdmin();
+        // Cek apakah lapangan milik admin yang login
+        $lapangan = Lapangan::byRegion($admin->region)->findOrFail($id);
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.edit", compact('lapangan'));
     }
     public function destroy($id)
     {
-        $lapangan = Lapangan::findOrFail($id);
+        $admin = $this->getAdmin();
+        // Cek apakah lapangan milik admin yang login
+        $lapangan = Lapangan::byRegion($admin->region)->findOrFail($id);
+        
+        // Hapus gambar jika ada
+        if ($lapangan->gambar) {
+            Storage::disk('public')->delete($lapangan->gambar);
+        }
+        
         $lapangan->delete();
 
         return redirect()
@@ -86,6 +123,10 @@ class InputLapanganController extends Controller
     }
     public function update(Request $request, $id)
     {
+        $admin = $this->getAdmin();
+        // Cek apakah lapangan milik admin yang login
+        $lapangan = Lapangan::byRegion($admin->region)->findOrFail($id);
+        
         $validated = $request->validate([
             'namaLapangan' => 'required|string',
             'jenisLapangan' => 'required|string',
@@ -93,7 +134,7 @@ class InputLapanganController extends Controller
             'status' => 'required|string',
             'deskripsi' => 'required|string',
         ]);
-        Lapangan::whereId($id)->update($validated);
+        $lapangan->update($validated);
         return redirect()
             ->route('lapangan.view')
             ->with('success', 'Lapangan berhasil diperbarui.');
@@ -101,7 +142,8 @@ class InputLapanganController extends Controller
 
     public function slider()
     {
-        $slider = Slider::all();
+        $admin = $this->getAdmin();
+        $slider = Slider::byRegion($admin->region)->get();
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.slider", compact('slider'));
     }
@@ -113,10 +155,15 @@ class InputLapanganController extends Controller
         ]);
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            // contoh: lapangan_images/Lapangan/xxxxx.jpg
             $path = $file->store('lapangan_images', 'public');
             $validated['gambar'] = $path;
         }
+        
+        // Tambah region dan admin_id otomatis
+        $admin = $this->getAdmin();
+        $validated['region'] = $admin->region;
+        $validated['admin_id'] = $admin->id;
+        
         Slider::create($validated);
         return redirect()
             ->route('lapangan.slider')
@@ -125,14 +172,16 @@ class InputLapanganController extends Controller
 
     public function editSlider($id)
     {
-        $slider = Slider::findOrFail($id);
+        $admin = $this->getAdmin();
+        $slider = Slider::byRegion($admin->region)->findOrFail($id);
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.editSlider", compact('slider'));
     }
 
     public function updateSlider(Request $request, $id)
     {
-        $slider = Slider::findOrFail($id);
+        $admin = $this->getAdmin();
+        $slider = Slider::byRegion($admin->region)->findOrFail($id);
         
         $validated = $request->validate([
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -157,7 +206,8 @@ class InputLapanganController extends Controller
 
     public function destroySlider($id)
     {
-        $slider = Slider::findOrFail($id);
+        $admin = $this->getAdmin();
+        $slider = Slider::byRegion($admin->region)->findOrFail($id);
         
         // Hapus gambar dari storage
         if ($slider->gambar) {
@@ -172,13 +222,14 @@ class InputLapanganController extends Controller
 
     public function event()
     {
-        $events = Event::all();
+        $admin = $this->getAdmin();
+        $events = Event::byRegion($admin->region)->get();
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.event", compact('events'));
     }
+    
     public function storeEvent(Request $request)
     {
-        
         $validated = $request->validate([
             'judul' => 'required|string',
             'tanggal_mulai' => 'required|date',
@@ -188,10 +239,16 @@ class InputLapanganController extends Controller
         ]);
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            // contoh: lapangan_images/Lapangan/xxxxx.jpg
             $path = $file->store('event', 'public');
             $validated['gambar'] = $path;
         }
+        
+        // Tambah region dan admin_id otomatis
+        $admin = $this->getAdmin();
+        $validated['region'] = $admin->region;
+        $validated['admin_id'] = $admin->id;
+        $validated['status'] = 'active';
+        
         Event::create($validated);
         return redirect()
             ->route('lapangan.event')
@@ -200,14 +257,16 @@ class InputLapanganController extends Controller
 
     public function editEvent($id)
     {
-        $event = Event::findOrFail($id);
+        $admin = $this->getAdmin();
+        $event = Event::byRegion($admin->region)->findOrFail($id);
         $adminFolder = $this->getAdminFolder();
         return view("dashboardAdm.{$adminFolder}.editEvent", compact('event'));
     }
 
     public function updateEvent(Request $request, $id)
     {
-        $event = Event::findOrFail($id);
+        $admin = $this->getAdmin();
+        $event = Event::byRegion($admin->region)->findOrFail($id);
         
         $validated = $request->validate([
             'judul' => 'required|string',
@@ -236,7 +295,8 @@ class InputLapanganController extends Controller
 
     public function destroyEvent($id)
     {
-        $event = Event::findOrFail($id);
+        $admin = $this->getAdmin();
+        $event = Event::byRegion($admin->region)->findOrFail($id);
         
         // Hapus gambar dari storage
         if ($event->gambar) {
