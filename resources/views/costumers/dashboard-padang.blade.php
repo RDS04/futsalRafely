@@ -226,7 +226,7 @@
                         <img
                             src="{{ asset('storage/' . $lp->gambar) }}"
                             class="w-full h-52 object-cover"
-                            alt="{{ $lp->nama_lapangan }}">
+                            alt="{{ $lp->namaLapangan }}">
 
                         {{-- STATUS BADGE --}}
                         @if ($lp->status === 'tersedia')
@@ -243,7 +243,7 @@
                     {{-- CONTENT --}}
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-800">
-                            {{ $lp->nama_lapangan }}
+                            {{ $lp->namaLapangan }}
                         </h3>
 
                         <p class="text-gray-500 text-sm mb-2">

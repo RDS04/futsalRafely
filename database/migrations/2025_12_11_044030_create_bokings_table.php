@@ -17,6 +17,8 @@ return new class extends Migration
             $table->date('tanggal');
             $table->string('jam_mulai');
             $table->string('jam_selesai');
+            $table->string('region');
+            $table->enum('status', ['pending', 'confirmed', 'canceled'])->default('pending');
             $table->string('lapangan');
             $table->text('catatan')->nullable();
             $table->timestamps();

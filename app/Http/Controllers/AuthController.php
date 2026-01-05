@@ -90,6 +90,7 @@ class AuthController extends Controller
      * - gender: L atau P
      * - phone: format Indonesia
      * - address: alamat lengkap
+     * - role: member, admin, manager
      */
     public function store(Request $request)
     {
@@ -229,17 +230,10 @@ class AuthController extends Controller
      */
     public function storeAdmin(Request $request)
     {
-        // Hanya master admin yang bisa create admin baru
-        $currentAdmin = Auth::guard('admin')->user();
-        if (!$currentAdmin || !$currentAdmin->isMaster()) {
-            return back()
-                ->withErrors(['error' => 'Hanya Master Admin yang dapat membuat akun admin baru']);
-        }
-
+      
         // Validasi input
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:admins,name',
-            'email' => 'required|email|unique:admins,email',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:master,regional',
             'region' => 'required_if:role,regional|in:padang,sijunjung,bukittinggi',

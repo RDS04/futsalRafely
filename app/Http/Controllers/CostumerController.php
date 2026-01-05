@@ -32,7 +32,7 @@ class CostumerController extends Controller
      * 
      * ⭐ PENTING: 
      * - Query HANYA filter 'padang'
-     * - Lapangan status 'aktif' + daftar kolom yang dibutuhkan
+     * - Lapangan status 'tersedia' + daftar kolom yang dibutuhkan
      * - Event belum selesai diurutkan paling baru
      * - Slider untuk carousel/banner
      */
@@ -46,7 +46,7 @@ class CostumerController extends Controller
             ->get();
 
         $lapangan = Lapangan::where('region', $region)
-            ->where('status', 'aktif')
+            ->where('status', 'tersedia')
             ->select('id', 'namaLapangan', 'jenisLapangan', 'harga', 'deskripsi', 'gambar', 'status', 'region')
             ->get();
 
@@ -73,7 +73,7 @@ class CostumerController extends Controller
             ->get();
 
         $lapangan = Lapangan::where('region', $region)
-            ->where('status', 'aktif')
+            ->where('status', 'tersedia')
             ->select('id', 'namaLapangan', 'jenisLapangan', 'harga', 'deskripsi', 'gambar', 'status', 'region')
             ->get();
 
@@ -100,7 +100,7 @@ class CostumerController extends Controller
             ->get();
 
         $lapangan = Lapangan::where('region', $region)
-            ->where('status', 'aktif')
+            ->where('status', 'tersedia')
             ->select('id', 'namaLapangan', 'jenisLapangan', 'harga', 'deskripsi', 'gambar', 'status', 'region')
             ->get();
 

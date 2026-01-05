@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('lapangans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('admin_id')->nullable()->constrained('admins')->onDelete('cascade');
             $table->string('namaLapangan');
             $table->string('jenisLapangan');
             $table->integer('harga');
-            $table->enum('status', ['aktif', 'tidak aktif']);
+            $table->enum('status', ['tersedia', 'tidak tersedia']);
             $table->enum('region', ['padang', 'bukittinggi', 'sijunjung'])->default('padang');
             $table->text('deskripsi');
             $table->string('gambar')->nullable();

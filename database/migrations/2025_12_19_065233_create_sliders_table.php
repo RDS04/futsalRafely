@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('sliders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('admin_id')->nullable()->constrained('admins')->onDelete('cascade');
+            $table->enum('region', ['padang', 'bukittinggi', 'sijunjung'])->default('padang');
             $table->string('gambar')->nullable();
             $table->timestamps();
         });

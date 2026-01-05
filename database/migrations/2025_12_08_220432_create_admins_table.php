@@ -18,6 +18,7 @@ return new class extends Migration
             // region: padang, bukittinggi, sijunjung
             $table->enum('region', ['padang', 'bukittinggi', 'sijunjung'])
                   ->default('padang');
+                
 
             $table->rememberToken();
             $table->timestamps();

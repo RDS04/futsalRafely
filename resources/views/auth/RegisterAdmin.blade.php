@@ -83,6 +83,22 @@
                 @enderror
             </div>
 
+            {{-- ROLE --}}
+            <div>
+                <label class="block mb-2 text-white/90 font-medium text-sm">Role <span class="text-red-400">*</span></label>
+                <select name="role"
+                    class="w-full p-3 rounded-lg bg-white/10 text-white border @error('role') border-red-500 @else border-white/20 @enderror focus:border-blue-400 focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer"
+                    required>
+                    <option value="">-- Pilih Role Admin --</option>
+                    <option value="master" {{ old('role') === 'master' ? 'selected' : '' }}>Master Admin</option>
+                    <option value="regional" {{ old('role') === 'regional' ? 'selected' : '' }}>Regional Admin</option>
+                    
+                </select>
+                @error('role')
+                    <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             <p class="text-white/60 text-xs text-center">
                 <span class="text-red-400">*</span> Wajib diisi
             </p>

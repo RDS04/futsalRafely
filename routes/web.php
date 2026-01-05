@@ -7,24 +7,32 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InputLapanganController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('costumers.dashboard-padang');
-});
-
 /**
  * ROUTE WEBSITE PUBLIK (CUSTOMER)
  * Route untuk menampilkan website sesuai region
+ * Menggunakan CostumerController untuk mengirim data lapangan, event, slider
  */
-Route::get('/region/{region}', function ($region) {
-    $region = strtolower($region);
-    $validRegions = ['padang', 'sijunjung', 'bukittinggi'];
+Route::controller(CostumerController::class)->group(function () {
+    // Redirect root ke padang dashboard
+    Route::get('/', 'padang')->name('home');
     
-    if (!in_array($region, $validRegions)) {
-        abort(404, 'Region tidak ditemukan');
-    }
+    // Public routes untuk melihat lapangan per region (tanpa auth)
+    Route::get('/region/padang', 'padang')->name('web.region.padang');
+    Route::get('/region/sijunjung', 'sijunjung')->name('web.region.sijunjung');
+    Route::get('/region/bukittinggi', 'bukittinggi')->name('web.region.bukittinggi');
     
-    return view("costumers.dashboard-{$region}");
-})->name('web.region');
+    // Redirect /region/{region} ke controller
+    Route::get('/region/{region}', function ($region) {
+        $region = strtolower($region);
+        $validRegions = ['padang', 'sijunjung', 'bukittinggi'];
+        
+        if (!in_array($region, $validRegions)) {
+            abort(404, 'Region tidak ditemukan');
+        }
+        
+        return redirect("region/{$region}");
+    })->name('web.region');
+});
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'ShowLogin')->name('login');

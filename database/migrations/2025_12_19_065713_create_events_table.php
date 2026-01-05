@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('admin_id')->nullable()->constrained('admins')->onDelete('cascade');
             $table->string('judul');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->enum('status', ['akan_datang', 'berlangsung', 'selesai'])->default('akan_datang');
+            $table->enum('region', ['padang', 'bukittinggi', 'sijunjung'])->default('padang');
             $table->text('deskripsi');
             $table->string('gambar');
             $table->timestamps();
