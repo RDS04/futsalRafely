@@ -14,8 +14,11 @@ class Admin extends Authenticatable
 
     protected $fillable = [
         'name',
+        'email',
         'password',
         'region',
+        'role',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -24,7 +27,7 @@ class Admin extends Authenticatable
     ];
 
     protected $casts = [
-        'password' => 'hashed',
+        'is_active' => 'boolean',
     ];
 
     /**
@@ -62,5 +65,46 @@ class Admin extends Authenticatable
             'sijunjung' => 'Sijunjung',
         ];
         return $labels[$this->region] ?? $this->region;
+    }
+
+    /**
+     * Get label role (master atau regional)
+     */
+    public function getRoleLabelAttribute()
+    {
+        $labels = [
+            'master' => 'Master Admin (CEO)',
+            'regional' => 'Regional Admin',
+        ];
+        return $labels[$this->role] ?? $this->role;
+    }
+
+    /**
+     * Helper: Cek apakah admin adalah master
+     */
+    public function isMaster(): bool
+    {
+        return $this->role === 'master';
+    }
+
+    /**
+     * Helper: Cek apakah admin adalah regional
+     */
+    public function isRegional(): bool
+    {
+        return $this->role === 'regional';
+    }
+
+    /**
+     * Helper: Cek apakah admin bisa akses region tertentu
+     */
+    public function canAccessRegion(string $region): bool
+    {
+        // Master bisa akses semua region
+        if ($this->isMaster()) {
+            return true;
+        }
+        // Regional hanya bisa akses region mereka
+        return $this->region === $region;
     }
 }

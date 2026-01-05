@@ -11,6 +11,21 @@ Route::get('/', function () {
     return view('costumers.dashboard-padang');
 });
 
+/**
+ * ROUTE WEBSITE PUBLIK (CUSTOMER)
+ * Route untuk menampilkan website sesuai region
+ */
+Route::get('/region/{region}', function ($region) {
+    $region = strtolower($region);
+    $validRegions = ['padang', 'sijunjung', 'bukittinggi'];
+    
+    if (!in_array($region, $validRegions)) {
+        abort(404, 'Region tidak ditemukan');
+    }
+    
+    return view("costumers.dashboard-{$region}");
+})->name('web.region');
+
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'ShowLogin')->name('login');
     Route::get('/admin/login', 'ShowLoginAdmin')->name('loginAdmin');
@@ -26,18 +41,38 @@ Route::controller(AuthController::class)->group(function () {
 
 /**
  * ROUTE ADMIN
- * Middleware: auth.admin dan region.check
+ * Middleware: auth.admin -> check admin login
+ * 
+ * Untuk Master Admin only:
+ * - /admin/dashboard (master dashboard)
+ * - /admin/manajemen/* (manage regions, admins, etc)
+ * 
+ * Untuk semua admin (master dan regional):
+ * - /admin/dashboard/{region} (regional dashboard)
+ * - /admin/input-lapangan/* (manage lapangan, slider, event)
  */
-Route::middleware(['auth.admin', 'region.check'])->prefix('admin')->group(function () {
+Route::middleware(['auth.admin'])->prefix('admin')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
-        Route::get('/dashboard', 'homeAdmin')->name('admin.dashboard');
-        Route::get('/dashboard/padang', 'adminPadang')->name('adminPadang');
-        Route::get('/dashboard/sijunjung', 'adminSijunjung')->name('adminSijunjung');
-        Route::get('/dashboard/bukittinggi', 'adminBukittinggi')->name('adminBukittinggi');
+        // Master Admin Dashboard - lihat semua region
+        // Middleware: check role master
+        Route::get('/dashboard', 'homeAdmin')
+            ->middleware('admin.role:master')
+            ->name('admin.dashboard');
+        
+        // Dashboard dinamis per region - bisa akses sesuai region user
+        // Middleware: check region access (master bisa semua, regional hanya region mereka)
+        Route::get('/dashboard/{region}', 'adminDashboard')
+            ->middleware('region.access')
+            ->name('admin.dashboard.region');
+        
+        // API endpoint untuk ambil data region
+        Route::get('/api/region/{region}', 'getRegionData')->name('admin.region.data');
+        Route::get('/api/regions', 'getRegions')->name('admin.regions.list');
     });
     
     /**
      * ROUTE INPUT LAPANGAN - LAPANGAN, SLIDER, EVENT
+     * Accessible untuk master dan regional admin sesuai region
      */
     Route::controller(InputLapanganController::class)->prefix('input-lapangan')->group(function () {
         // Lapangan

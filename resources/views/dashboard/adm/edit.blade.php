@@ -125,7 +125,7 @@
 
                 {{-- FOOTER --}}
                 <div class="card-footer d-flex justify-content-end gap-2">
-                    <a href="{{ route('inputLapangan.padang') }}" class="btn btn-secondary">
+                    <a href="{{ route('inputLapangan.Lapangan') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" class="btn btn-warning">

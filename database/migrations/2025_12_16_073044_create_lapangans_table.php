@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('namaLapangan');
             $table->string('jenisLapangan');
             $table->integer('harga');
-            $table->enum('status', ['tersedia', 'tidak tersedia']);
+            $table->enum('status', ['aktif', 'tidak aktif']);
+            $table->enum('region', ['padang', 'bukittinggi', 'sijunjung'])->default('padang');
             $table->text('deskripsi');
             $table->string('gambar')->nullable();
             $table->timestamps();
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lapanganPadangs');
+        Schema::dropIfExists('lapangans');
     }
 };

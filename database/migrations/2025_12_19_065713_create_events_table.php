@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('judul');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
-            $table->enum('status', ['berlangsung', 'akan_datang', 'selesai'])->default('akan_datang');
+            $table->enum('status', ['akan_datang', 'berlangsung', 'selesai'])->default('akan_datang');
             $table->text('deskripsi');
             $table->string('gambar');
             $table->timestamps();

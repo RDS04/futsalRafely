@@ -56,7 +56,7 @@
                                 <input type="date"
                                        name="tanggal_mulai"
                                        class="form-control"
-                                       value="{{ old('tanggal_mulai', $event->tanggal_mulai) }}"
+                                       value="{{ old('tanggal_mulai', is_string($event->tanggal_mulai) ? $event->tanggal_mulai : $event->tanggal_mulai->format('Y-m-d')) }}"
                                        required>
                             </div>
 
@@ -65,7 +65,7 @@
                                 <input type="date"
                                        name="tanggal_selesai"
                                        class="form-control"
-                                       value="{{ old('tanggal_selesai', $event->tanggal_selesai) }}"
+                                       value="{{ old('tanggal_selesai', is_string($event->tanggal_selesai) ? $event->tanggal_selesai : $event->tanggal_selesai->format('Y-m-d')) }}"
                                        required>
                             </div>
 
@@ -80,6 +80,16 @@
                                           class="form-control"
                                           rows="4"
                                           required>{{ old('deskripsi', $event->deskripsi) }}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Status Event</label>
+                                <select name="status" class="form-control" required>
+                                    <option value="">-- Pilih Status --</option>
+                                    <option value="akan_datang" {{ old('status', $event->status) === 'akan_datang' ? 'selected' : '' }}>Akan Datang</option>
+                                    <option value="berlangsung" {{ old('status', $event->status) === 'berlangsung' ? 'selected' : '' }}>Berlangsung</option>
+                                    <option value="selesai" {{ old('status', $event->status) === 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                </select>
                             </div>
 
                         </div>

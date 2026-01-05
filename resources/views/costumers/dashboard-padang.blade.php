@@ -216,8 +216,7 @@
                     </a>
                 </div>
             </div>
-            @else
-
+            @else 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($lapangan as $lp)
                 <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">

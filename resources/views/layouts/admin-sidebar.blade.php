@@ -7,7 +7,7 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
     <!-- Sidebar brand -->
     <div class="sidebar-brand px-3 py-3">
-        <a href="{{ auth('admin')->check() ? route('web.region', ['region' => strtolower($region)]) : '/' }}" class="brand-link d-flex align-items-center gap-3">
+        <a href="/" class="brand-link d-flex align-items-center gap-3">
             <!-- Logo -->
             <img
                 src="{{ asset('static/img/logo.png') }}"

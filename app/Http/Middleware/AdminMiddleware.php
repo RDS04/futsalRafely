@@ -12,25 +12,33 @@ class AdminMiddleware
 {
     /**
      * Handle an incoming request.
-     * Middleware ini memastikan user sudah login sebagai admin
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
+     * Middleware ini memastikan user sudah login sebagai admin dan akun aktif
+    *
+    * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+    */
     public function handle(Request $request, Closure $next): Response
     {
         // Cek apakah user admin sudah login menggunakan guard admin
         if (!Auth::guard('admin')->check()) {
             return redirect()->route('loginAdmin')
-                ->with('error', 'Anda harus login sebagai admin terlebih dahulu');
+            ->with('error', 'Anda harus login sebagai admin terlebih dahulu');
         }
-
+        
         // Cek apakah user adalah admin
         $user = Auth::guard('admin')->user();
         if (!$user instanceof Admin) {
             return redirect()->route('loginAdmin')
-                ->with('error', 'Anda tidak memiliki akses sebagai admin');
+            ->with('error', 'Anda tidak memiliki akses sebagai admin');
         }
-
+        
+        // Cek apakah akun admin active
+        if (!$user->is_active) {
+            Auth::guard('admin')->logout();
+            return redirect()->route('loginAdmin')
+            ->with('error', 'Akun admin Anda tidak aktif. Hubungi administrator.');
+        }
+        
         return $next($request);
     }
 }
+?>

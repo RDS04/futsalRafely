@@ -4,52 +4,80 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seed admin users untuk setiap region
+     * 
+     * Master Admin (role=master): Bisa lihat semua region
+     * Regional Admin (role=regional): Hanya bisa akses region mereka
+     * 
+     * Credentials (Password Plain Text):
+     * - Master: admin@master.com / master123
+     * - Padang: admin@padang.com / padang123
+     * - Sijunjung: admin@sijunjung.com / sijunjung123
+     * - Bukittinggi: admin@bukittinggi.com / bukittinggi123
      */
     public function run(): void
     {
-        // Admin Master - bisa lihat semua region
+        // ==========================================
+        // MASTER ADMIN - Bisa lihat semua region
+        // ==========================================
         Admin::firstOrCreate(
-            ['name' => 'Master Admin'],
+            ['email' => 'admin@master.com'],
             [
                 'name' => 'Master Admin',
-                'password' => Hash::make('admin123'),
-                'region' => 'padang', // default
+                'email' => 'admin@master.com',
+                'password' => 'master123', // Plain text
+                'region' => 'padang', // default region, tapi bisa akses semua
+                'role' => 'master',
+                'is_active' => true,
             ]
         );
 
-        // Admin Padang
+        // ==========================================
+        // ADMIN REGION PADANG
+        // ==========================================
         Admin::firstOrCreate(
-            ['name' => 'Admin Padang'],
+            ['email' => 'admin@padang.com'],
             [
                 'name' => 'Admin Padang',
-                'password' => Hash::make('padang123'),
+                'email' => 'admin@padang.com',
+                'password' => 'padang123', // Plain text
                 'region' => 'padang',
+                'role' => 'regional',
+                'is_active' => true,
             ]
         );
 
-        // Admin Sijunjung
+        // ==========================================
+        // ADMIN REGION SIJUNJUNG
+        // ==========================================
         Admin::firstOrCreate(
-            ['name' => 'Admin Sijunjung'],
+            ['email' => 'admin@sijunjung.com'],
             [
                 'name' => 'Admin Sijunjung',
-                'password' => Hash::make('sijunjung123'),
+                'email' => 'admin@sijunjung.com',
+                'password' => 'sijunjung123', // Plain text
                 'region' => 'sijunjung',
+                'role' => 'regional',
+                'is_active' => true,
             ]
         );
 
-        // Admin Bukittinggi
+        // ==========================================
+        // ADMIN REGION BUKITTINGGI
+        // ==========================================
         Admin::firstOrCreate(
-            ['name' => 'Admin Bukittinggi'],
+            ['email' => 'admin@bukittinggi.com'],
             [
                 'name' => 'Admin Bukittinggi',
-                'password' => Hash::make('bukittinggi123'),
+                'email' => 'admin@bukittinggi.com',
+                'password' => 'bukittinggi123', // Plain text
                 'region' => 'bukittinggi',
+                'role' => 'regional',
+                'is_active' => true,
             ]
         );
     }

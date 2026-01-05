@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'auth.admin' => \App\Http\Middleware\AdminMiddleware::class,
             'region.check' => \App\Http\Middleware\RegionCheck::class,
+            'admin.role' => \App\Http\Middleware\AdminRoleMiddleware::class,
+            'region.access' => \App\Http\Middleware\RegionAccessMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

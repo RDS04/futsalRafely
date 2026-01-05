@@ -3,7 +3,7 @@
 
 @endsection
 <section class="max-w-3xl mx-auto py-10 px-6">
-    <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Form Pemesanan Lapangan {{ Auth::user()->region }} </h2>
+    <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Form Pemesanan Lapangan {{ Auth::check() ? Auth::user()->region : '' }} </h2>
 
     <div class="bg-white rounded-xl shadow-lg p-8">
         <form action="{{ route('boking.store') }}" method="POST" class="space-y-6">

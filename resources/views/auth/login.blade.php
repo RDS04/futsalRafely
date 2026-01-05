@@ -6,31 +6,45 @@
             Login Member
         </h2>
 
+        @if(session('success'))
+            <div class="mb-4 p-3 rounded-lg bg-green-500/20 text-green-300 text-sm border border-green-400/30">
+                {{ session('success') }}
+            </div>
+        @endif
+
         @if(session('error'))
-        <div class="mb-4 p-3 rounded-lg bg-red-500/20 text-red-300 text-sm border border-red-400/30">
-            {{ session('error') }}
-        </div>
+            <div class="mb-4 p-3 rounded-lg bg-red-500/20 text-red-300 text-sm border border-red-400/30">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if($errors->has('loginError'))
+            <div class="mb-4 p-3 rounded-lg bg-red-500/20 text-red-300 text-sm border border-red-400/30">
+                {{ $errors->first('loginError') }}
+            </div>
         @endif
 
         <form method="POST" action="{{ route('login.post') }}">
             @csrf
 
             {{-- Name --}}
-            <label class="block text-white/90 mb-1 font-medium">Name</label>
-            <input type="text" name="name"
-                class="w-full mb-4 p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-500"
+            <label class="block text-white/90 mb-1 font-medium">Nama Member</label>
+            <input type="text" name="name" value="{{ old('name') }}"
+                class="w-full mb-4 p-3 rounded-lg bg-white/10 text-white placeholder-white/70 border @error('name') border-red-500 @else border-white/20 @enderror focus:border-blue-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 placeholder="Masukkan nama..." required>
+            @error('name')
+                <p class="text-red-400 text-sm mb-4">{{ $message }}</p>
+            @enderror
 
-            {{-- Password --}}
             {{-- Password --}}
             <label class="block text-white/90 mb-1 font-medium">Password</label>
 
-            <div class="relative mb-4">
+            <div class="relative mb-6">
                 <input
                     type="password"
                     name="password"
                     id="password"
-                    class="w-full p-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:border-blue-400 focus:ring-2 focus:ring-blue-500"
+                    class="w-full p-3 pr-12 rounded-lg bg-white/10 text-white placeholder-white/70 border @error('password') border-red-500 @else border-white/20 @enderror focus:border-blue-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     placeholder="Masukkan password..."
                     required>
 
@@ -54,30 +68,30 @@
                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13.875 18.825A10.05 10.05 0 0112 19
-                     c-4.478 0-8.268-2.943-9.543-7
-                     a9.97 9.97 0 012.478-4.132M6.223 6.223
-                     A9.956 9.956 0 0112 5
-                     c4.478 0 8.268 2.943 9.543 7
-                     a9.97 9.97 0 01-4.132 5.41M15 12
-                     a3 3 0 00-3-3m0 0
-                     a3 3 0 013 3m-3-3
-                     L3 3" />
+                         c-4.478 0-8.268-2.943-9.543-7
+                         a9.97 9.97 0 012.478-4.132M6.223 6.223
+                         A9.956 9.956 0 0112 5
+                         c4.478 0 8.268 2.943 9.543 7
+                         a9.97 9.97 0 01-2.478 4.132m0 0a3 3 0 01-4.255 4.255m7.07-7.07a3 3 0 111.414-1.414M9.88 9.88a3 3 0 111.414 1.414" />
                     </svg>
                 </button>
             </div>
+            @error('password')
+                <p class="text-red-400 text-sm mb-6">{{ $message }}</p>
+            @enderror
 
 
             {{-- Button --}}
             <button type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition">
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition duration-200 transform hover:scale-105">
                 Login
             </button>
 
             {{-- Register Link --}}
             <p class="text-center text-white/70 text-sm mt-4">
                 Belum punya akun?
-                <a href="{{ route('register') }}" class="text-blue-400 hover:underline">
-                    Daftar sekarang
+                <a href="{{ route('register') }}" class="text-blue-400 hover:underline font-medium">
+                    Daftar di sini
                 </a>
             </p>
 

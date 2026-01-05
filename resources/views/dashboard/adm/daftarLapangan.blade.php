@@ -180,7 +180,7 @@
                     <div class="text-center py-5">
                         <i class="fas fa-inbox" style="font-size: 3rem; color: #ccc;"></i>
                         <p class="text-muted mt-3 mb-3">Tidak ada data lapangan</p>
-                        <a href="{{ route('inputLapangan') }}" class="btn btn-primary">
+                        <a href="{{ route('inputLapangan.Lapangan') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Tambah Lapangan Pertama
                         </a>
                     </div>

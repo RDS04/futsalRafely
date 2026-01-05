@@ -42,6 +42,16 @@
                                 <label class="form-label fw-semibold">Tanggal Selesai</label>
                                 <input type="date" name="tanggal_selesai" class="form-control" required>
                             </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Status Event</label>
+                                <select name="status" class="form-control" required>
+                                    <option value="">-- Pilih Status --</option>
+                                    <option value="akan_datang">Akan Datang</option>
+                                    <option value="berlangsung">Berlangsung</option>
+                                    <option value="selesai">Selesai</option>
+                                </select>
+                            </div>
                         </div>
 
                         {{-- KOLOM KANAN --}}
@@ -94,7 +104,8 @@
                                     <th width="20%">Judul Event</th>
                                     <th width="15%">Tanggal Mulai</th>
                                     <th width="15%">Tanggal Selesai</th>
-                                    <th width="35%">Deskripsi</th>
+                                    <th width="20%">Deskripsi</th>
+                                    <th width="10%">Status</th>
                                     <th width="10%">Aksi</th>
                                 </tr>
                             </thead>
@@ -113,6 +124,23 @@
                                         </td>
                                         <td>
                                             <small class="text-muted">{{ Str::limit($event->deskripsi, 50) }}</small>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $statusBadge = match($event->status) {
+                                                    'akan_datang' => 'badge bg-info',
+                                                    'berlangsung' => 'badge bg-warning',
+                                                    'selesai' => 'badge bg-success',
+                                                    default => 'badge bg-secondary'
+                                                };
+                                                $statusLabel = match($event->status) {
+                                                    'akan_datang' => 'Akan Datang',
+                                                    'berlangsung' => 'Berlangsung',
+                                                    'selesai' => 'Selesai',
+                                                    default => 'Unknown'
+                                                };
+                                            @endphp
+                                            <span class="{{ $statusBadge }}">{{ $statusLabel }}</span>
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
