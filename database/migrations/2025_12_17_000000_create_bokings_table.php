@@ -15,14 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->date('tanggal');
-            $table->string('jam_mulai');
-            $table->string('jam_selesai');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
             $table->string('region');
             $table->enum('status', ['pending', 'confirmed', 'canceled'])->default('pending');
             $table->string('lapangan');
+            $table->unsignedBigInteger('lapangan_id')->nullable();
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->decimal('total_harga', 10, 2)->nullable();
             $table->text('catatan')->nullable();
             $table->timestamps();
 
+            $table->foreign('lapangan_id')->references('id')->on('lapangans')->onDelete('set null');
+            $table->foreign('customer_id')->references('id')->on('costumers')->onDelete('set null');
         });
     }
 

@@ -128,3 +128,12 @@ Route::controller(BokingController::class)->prefix('boking')->group(function () 
     Route::post('/bokingForm', 'store')->name('boking.store');
     Route::get('/payment', 'payment')->name('show.payment');
 });
+
+/**
+ * ROUTE API - AVAILABILITY
+ */
+Route::controller(\App\Http\Controllers\AvailabilityController::class)->prefix('api')->group(function () {
+    Route::get('/availability/hours', 'getAvailableHours')->name('api.availability.hours');
+    Route::get('/availability/booked-slots', 'getBookedSlots')->name('api.availability.booked-slots');
+    Route::get('/availability/booked-dates', 'getBookedDates')->name('api.availability.booked-dates');
+});
