@@ -25,6 +25,7 @@ class BokingController extends Controller
 
     public function store(Request $request)
     {
+        
         // Validasi input
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
@@ -45,9 +46,10 @@ class BokingController extends Controller
         }
 
         // Check availability - apakah lapangan sudah terboking pada jam tersebut
+        // Exclude canceled bookings (hanya cek pending dan paid)
         $existingBooking = Boking::where('lapangan_id', $validatedData['lapangan_id'])
             ->where('tanggal', $validatedData['tanggal'])
-            ->where('status', '!=', 'canceled')
+            ->whereIn('status', ['pending', 'paid'])  // Hanya pending dan paid yang block
             ->where(function ($query) use ($validatedData) {
                 // Cek overlap dengan booking yang ada
                 $query->whereBetween('jam_mulai', [$validatedData['jam_mulai'], $validatedData['jam_selesai']])
@@ -72,19 +74,30 @@ class BokingController extends Controller
         $durasi = ($jamSelesai - $jamMulai) / 3600; // durasi dalam jam
         $totalHarga = $lapangan->harga * $durasi;
 
-        // Simpan data booking ke database
+        // Simpan data booking ke database dengan status pending
         $validatedData['customer_id'] = Auth::check() ? Auth::id() : null;
         $validatedData['total_harga'] = $totalHarga;
-        $validatedData['status'] = 'pending';
+        $validatedData['status'] = 'pending';  // Status awal: pending
 
-        Boking::create($validatedData);
+        $booking = Boking::create($validatedData);
 
-        return redirect()->route('show.payment')->with('success', 'Booking berhasil disimpan!');
+        // Simpan juga ke session untuk ditampilkan di payment page
+        session(['booking_data' => $validatedData]);
+        session(['booking_id' => $booking->id]);  // Simpan ID untuk tracking
+
+        return redirect()->route('show.payment')->with('success', 'Lanjut ke pembayaran!');
     }
 
     public function payment()
     {
-        $total=Boking::where('customer_id',Auth::id())->latest()->first()->total_harga;
-        return view('payment.index', compact('total'));
+        // Ambil data booking dari session
+        $bookingData = session('booking_data');
+        
+        if (!$bookingData) {
+            return redirect()->route('boking.form')
+                ->withErrors(['error' => 'Data booking tidak ditemukan. Silakan lakukan booking ulang.']);
+        }
+
+        return view('payment.index', compact('bookingData'));
     }
 }

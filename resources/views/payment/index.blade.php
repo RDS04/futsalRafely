@@ -1,105 +1,193 @@
-@extends('layout.layout')
-@section("content")
-<div class="max-w-3xl mx-auto p-6 mt-6 bg-white shadow-lg rounded-2xl">
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Pembayaran Booking Futsal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <h2 class="text-2xl font-bold mb-4 text-teal-600">Pembayaran Booking</h2>
+  <!-- Midtrans Sandbox -->
+  <script
+    src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="{{ config('midtrans.client_key') }}">
+  </script>
+  <!-- Production: src="https://app.midtrans.com/snap/snap.js" -->
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen py-10 px-4">
+    <div class="max-w-2xl mx-auto">
+      <!-- Header -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Pembayaran Booking</h1>
+        <p class="text-gray-600">Silakan review informasi booking Anda sebelum melakukan pembayaran</p>
+      </div>
 
-    <!-- INFORMASI PESANAN -->
-    <div class="bg-gray-50 p-4 rounded-lg border mb-6">
-        <p class="text-sm text-gray-600">Total Pembayaran</p>
-        <p class="text-3xl font-bold text-teal-600">Rp {{ number_format($total, 0, ',', '.') }}</p>
-    </div>
+      <!-- Booking Details -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Informasi Booking</h2>
+        
+        <div class="space-y-4">
+          <!-- Nama Lapangan -->
+          <div class="border-b pb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lapangan</label>
+            <p class="text-lg font-semibold text-gray-900">{{ $bookingData['lapangan'] ?? '-' }}</p>
+          </div>
 
-    <!-- METODE PEMBAYARAN -->
-    <h3 class="text-lg font-semibold mb-3">Pilih Metode Pembayaran</h3>
+          <!-- Tanggal -->
+          <div class="border-b pb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+            <p class="text-lg font-semibold text-gray-900">
+              {{ \Carbon\Carbon::parse($bookingData['tanggal'])->format('l, d F Y') }}
+            </p>
+          </div>
 
-    <form action="/pembayaran/kirim" method="POST" enctype="multipart/form-data">
-        @csrf
+          <!-- Waktu -->
+          <div class="border-b pb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Waktu Booking</label>
+            <p class="text-lg font-semibold text-gray-900">
+              {{ $bookingData['jam_mulai'] }} - {{ $bookingData['jam_selesai'] }}
+              <span class="text-sm text-gray-600 ml-2">({{ $bookingData['durasi'] ?? 0 }} jam)</span>
+            </p>
+          </div>
 
-        <div x-data="{ metode: '' }" class="space-y-4">
+          <!-- Nama Pemesan -->
+          <div class="border-b pb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Pemesan</label>
+            <p class="text-lg font-semibold text-gray-900">{{ $bookingData['nama'] ?? '-' }}</p>
+          </div>
 
-            <!-- PILIHAN METODE -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <!-- Region -->
+          <div class="border-b pb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Region</label>
+            <p class="text-lg font-semibold text-gray-900 capitalize">{{ $bookingData['region'] ?? '-' }}</p>
+          </div>
 
-                <!-- BANK TRANSFER -->
-                <label @click="metode='bank'"
-                    class="cursor-pointer p-4 border rounded-xl flex flex-col items-center hover:border-teal-500 transition"
-                    :class="metode=='bank' ? 'border-teal-500 bg-teal-50' : '' ">
-                    🏦
-                    <span class="mt-2 font-semibold text-sm">Bank Transfer</span>
-                </label>
-
-                <!-- E-WALLET -->
-                <label @click="metode='ewallet'"
-                    class="cursor-pointer p-4 border rounded-xl flex flex-col items-center hover:border-teal-500 transition"
-                    :class="metode=='ewallet' ? 'border-teal-500 bg-teal-50' : '' ">
-                    📱
-                    <span class="mt-2 font-semibold text-sm">E-Wallet</span>
-                </label>
-
-                <!-- QRIS -->
-                <label @click="metode='qris'"
-                    class="cursor-pointer p-4 border rounded-xl flex flex-col items-center hover:border-teal-500 transition"
-                    :class="metode=='qris' ? 'border-teal-500 bg-teal-50' : '' ">
-                    🔳
-                    <span class="mt-2 font-semibold text-sm">QRIS</span>
-                </label>
-
-                <!-- VIRTUAL ACCOUNT -->
-                <label @click="metode='va'"
-                    class="cursor-pointer p-4 border rounded-xl flex flex-col items-center hover:border-teal-500 transition"
-                    :class="metode=='va' ? 'border-teal-500 bg-teal-50' : '' ">
-                    💳
-                    <span class="mt-2 font-semibold text-sm">Virtual Account</span>
-                </label>
+          <!-- Catatan (jika ada) -->
+          @if(!empty($bookingData['catatan']))
+            <div class="border-b pb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
+              <p class="text-gray-900">{{ $bookingData['catatan'] }}</p>
             </div>
-
-            <!-- DETAIL INSTRUKSI -->
-            <div class="mt-4">
-
-                <!-- BANK TRANSFER -->
-                <div x-show="metode=='bank'" class="p-4 bg-gray-50 rounded-lg border">
-                    <p class="font-semibold">Transfer ke rekening berikut:</p>
-                    <p class="mt-2 text-gray-700">🏦 BCA • 1234567890 • A/N Lapangan Futsal</p>
-                    <p class="text-gray-700">🏦 Mandiri • 9876543210 • A/N Lapangan Futsal</p>
-                </div>
-
-                <!-- E-WALLET -->
-                <div x-show="metode=='ewallet'" class="p-4 bg-gray-50 rounded-lg border">
-                    <p class="font-semibold">E-Wallet tersedia:</p>
-                    <p class="mt-2">📲 Dana • 089123456789</p>
-                    <p>📲 OVO • 089987654321</p>
-                    <p>📲 Gopay • 081234567890</p>
-                </div>
-
-                <!-- QRIS -->
-                <div x-show="metode=='qris'" class="p-4 bg-gray-50 rounded-lg border">
-                    <p class="font-semibold mb-3">Scan QRIS di bawah ini:</p>
-                    <img src="/img/qris.png" class="w-48 mx-auto">
-                </div>
-
-                <!-- VIRTUAL ACCOUNT -->
-                <div x-show="metode=='va'" class="p-4 bg-gray-50 rounded-lg border">
-                    <p class="font-semibold">Gunakan Virtual Account berikut:</p>
-                    <p class="mt-2">💳 VA BCA: 393900{{ Auth::id() }}</p>
-                    <p>💳 VA Mandiri: 88777{{ Auth::id() }}</p>
-                </div>
-
-            </div>
-
-            <!-- UPLOAD BUKTI -->
-            <div class="mt-6">
-                <label class="font-semibold block mb-2">Upload Bukti Pembayaran</label>
-                <input type="file" name="bukti"
-                    class="w-full p-3 border rounded-lg bg-gray-50 cursor-pointer">
-            </div>
-
-            <!-- BUTTON SUBMIT -->
-            <button class="mt-6 w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-semibold">
-                Konfirmasi Pembayaran
-            </button>
+          @endif
         </div>
-    </form>
-</div>
+      </div>
 
-@endsection
+      <!-- Price Summary -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Ringkasan Harga</h2>
+        
+        <div class="space-y-3">
+          <div class="flex justify-between items-center pb-3 border-b">
+            <span class="text-gray-700">Harga per jam</span>
+            <span class="font-semibold text-gray-900">Rp {{ number_format($bookingData['harga_per_jam'], 0, ',', '.') }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center pb-3 border-b">
+            <span class="text-gray-700">Durasi</span>
+            <span class="font-semibold text-gray-900">{{ $bookingData['durasi'] ?? 0 }} jam</span>
+          </div>
+
+          <div class="flex justify-between items-center pt-3">
+            <span class="text-lg font-semibold text-gray-900">Total</span>
+            <span class="text-2xl font-bold text-blue-600">Rp {{ number_format($bookingData['total_harga'], 0, ',', '.') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Status Message -->
+      @if (session('success'))
+        <div class="bg-green-50 border-l-4 border-green-500 text-green-800 px-4 py-3 rounded-md mb-6">
+          {{ session('success') }}
+        </div>
+      @endif
+
+      @if ($errors->any())
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded-md mb-6">
+          @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+          @endforeach
+        </div>
+      @endif
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4">
+        <a href="{{ route('boking.form') }}" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold py-3 px-4 rounded-lg text-center transition">
+          Kembali
+        </a>
+        <button id="pay-button" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">
+          Lanjut ke Pembayaran
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate order ID dari timestamp + random
+    const orderId = 'BOOKING-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+    
+    document.getElementById('pay-button').addEventListener('click', async () => {
+      try {
+        const payButton = document.getElementById('pay-button');
+        payButton.disabled = true;
+        payButton.textContent = 'Sedang memproses...';
+        
+        // Request token dari server
+        const res = await fetch("/api/payment-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            order_id: orderId,
+            gross_amount: {{ intval($bookingData['total_harga']) }},
+            booking_data: {!! json_encode($bookingData) !!}
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.token) {
+          console.error('API Response Error:', data);
+          alert('Error: ' + (data.error || 'Gagal membuat token pembayaran. Silakan coba lagi.'));
+          payButton.disabled = false;
+          payButton.textContent = 'Lanjut ke Pembayaran';
+          return;
+        }
+
+        // Buka Midtrans Snap
+        window.snap.pay(data.token, {
+          onSuccess: function(result) {
+            console.log('Pembayaran sukses:', result);
+            // Redirect ke halaman sukses
+            window.location.href = '/payment/success?order_id=' + orderId;
+          },
+          onPending: function(result) {
+            console.log('Pembayaran pending:', result);
+            alert('Pembayaran sedang diproses. Silakan tunggu...');
+            payButton.disabled = false;
+            payButton.textContent = 'Lanjut ke Pembayaran';
+          },
+          onError: function(result) {
+            console.log('Pembayaran gagal:', result);
+            alert('Pembayaran gagal. Error: ' + (result.status_message || 'Silakan coba lagi.'));
+            payButton.disabled = false;
+            payButton.textContent = 'Lanjut ke Pembayaran';
+          },
+          onClose: function() {
+            console.log('Pop-up pembayaran ditutup');
+            payButton.disabled = false;
+            payButton.textContent = 'Lanjut ke Pembayaran';
+          }
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan: ' + error.message);
+        const payButton = document.getElementById('pay-button');
+        payButton.disabled = false;
+        payButton.textContent = 'Lanjut ke Pembayaran';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -512,7 +512,7 @@
         const loading = document.getElementById('timeSlotsLoading');
         loading.classList.add('active');
 
-        const url = new URL('{{ route("api.availability.hours") }}', window.location.origin);
+        const url = new URL('{{ route("api.available-hours") }}', window.location.origin);
         url.searchParams.append('lapangan_id', currentLapangan.id);
         url.searchParams.append('tanggal', selectedDate);
 

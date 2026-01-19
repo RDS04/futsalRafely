@@ -1,17 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\BokingController;
 use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InputLapanganController;
+use App\Http\Controllers\MidtransController;
 use Illuminate\Support\Facades\Route;
 
-/**
- * ROUTE WEBSITE PUBLIK (CUSTOMER)
- * Route untuk menampilkan website sesuai region
- * Menggunakan CostumerController untuk mengirim data lapangan, event, slider
- */
+
 Route::controller(CostumerController::class)->group(function () {
     // Redirect root ke padang dashboard
     Route::get('/', 'padang')->name('home');
@@ -47,18 +45,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/admin/register', 'storeAdmin')->name('admin.register.store');
 });
 
-/**
- * ROUTE ADMIN
- * Middleware: auth.admin -> check admin login
- * 
- * Untuk Master Admin only:
- * - /admin/dashboard (master dashboard)
- * - /admin/manajemen/* (manage regions, admins, etc)
- * 
- * Untuk semua admin (master dan regional):
- * - /admin/dashboard/{region} (regional dashboard)
- * - /admin/input-lapangan/* (manage lapangan, slider, event)
- */
+
 Route::middleware(['auth.admin'])->prefix('admin')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         // Master Admin Dashboard - lihat semua region
@@ -66,9 +53,6 @@ Route::middleware(['auth.admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', 'homeAdmin')
             ->middleware('admin.role:master')
             ->name('admin.dashboard');
-        
-        // Dashboard dinamis per region - bisa akses sesuai region user
-        // Middleware: check region access (master bisa semua, regional hanya region mereka)
         Route::get('/dashboard/{region}', 'adminDashboard')
             ->middleware('region.access')
             ->name('admin.dashboard.region');
@@ -77,11 +61,7 @@ Route::middleware(['auth.admin'])->prefix('admin')->group(function () {
         Route::get('/api/region/{region}', 'getRegionData')->name('admin.region.data');
         Route::get('/api/regions', 'getRegions')->name('admin.regions.list');
     });
-    
-    /**
-     * ROUTE INPUT LAPANGAN - LAPANGAN, SLIDER, EVENT
-     * Accessible untuk master dan regional admin sesuai region
-     */
+
     Route::controller(InputLapanganController::class)->prefix('input-lapangan')->group(function () {
         // Lapangan
         Route::get('/inputLapangan', 'inputLapangan')->name('inputLapangan.Lapangan');
@@ -108,9 +88,6 @@ Route::middleware(['auth.admin'])->prefix('admin')->group(function () {
     });
 });
 
-/**
- * ROUTE CUSTOMER
- */
 Route::middleware('auth')->group(function () {
     Route::controller(CostumerController::class)->group(function () {
         Route::get('/dashboard/padang', 'padang')->name('costumers.dashboard.padang');
@@ -119,9 +96,7 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-/**
- * ROUTE BOOKING
- */
+
 Route::controller(BokingController::class)->prefix('boking')->group(function () {
     Route::get('/', 'bookingForm')->name('boking.form');
     Route::get('/bokingForm', 'bookingForm')->name('boking.form');
@@ -129,11 +104,27 @@ Route::controller(BokingController::class)->prefix('boking')->group(function () 
     Route::get('/payment', 'payment')->name('show.payment');
 });
 
-/**
- * ROUTE API - AVAILABILITY
- */
-Route::controller(\App\Http\Controllers\AvailabilityController::class)->prefix('api')->group(function () {
-    Route::get('/availability/hours', 'getAvailableHours')->name('api.availability.hours');
-    Route::get('/availability/booked-slots', 'getBookedSlots')->name('api.availability.booked-slots');
-    Route::get('/availability/booked-dates', 'getBookedDates')->name('api.availability.booked-dates');
+// Payment success page
+Route::get('/payment/success', function() {
+    return view('payment.success');
+})->name('payment.success');
+
+
+Route::controller(MidtransController::class)->prefix('midtrans')->group(function () {
+    Route::get('/checkout/{order}', 'checkout')->name('checkout');
+    Route::get('/debug', 'debugConfig')->name('midtrans.debug');
+    Route::post('/token/{order}', 'token')->name('midtrans.token');
+    Route::post('/notification', 'notification')->name('midtrans.notification');
+
 });
+
+// Availability endpoints
+Route::controller(AvailabilityController::class)->prefix('api')->group(function () {
+    Route::get('/available-hours', 'getAvailableHours')->name('api.available-hours');
+    Route::get('/booked-slots', 'getBookedSlots')->name('api.booked-slots');
+});
+
+// Payment API endpoint
+Route::post('/api/payment-token', [MidtransController::class, 'token'])->name('api.payment-token');
+
+// webhook dari Midtrans (sebaiknya di routes/api.php juga boleh)
