@@ -31,16 +31,63 @@
           <div class="space-y-3 bg-gray-50 p-4 rounded">
             <div class="flex justify-between">
               <span class="text-gray-700">Order ID:</span>
-              <span class="font-semibold text-gray-900">{{ request('order_id') }}</span>
+              <span class="font-semibold text-gray-900">{{ $orderId ?? '-' }}</span>
             </div>
+            @if($booking)
             <div class="flex justify-between border-t pt-3">
-              <span class="text-gray-700">Status:</span>
+              <span class="text-gray-700">Status Booking:</span>
               <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
-                ✓ Terkonfirmasi
+                ✓ {{ ucfirst($booking->status) }}
               </span>
             </div>
+            <div class="flex justify-between border-t pt-3">
+              <span class="text-gray-700">Lapangan:</span>
+              <span class="font-semibold text-gray-900">{{ $booking->lapangan }}</span>
+            </div>
+            <div class="flex justify-between border-t pt-3">
+              <span class="text-gray-700">Tanggal:</span>
+              <span class="font-semibold text-gray-900">{{ \Carbon\Carbon::parse($booking->tanggal)->format('d M Y') }}</span>
+            </div>
+            <div class="flex justify-between border-t pt-3">
+              <span class="text-gray-700">Jam:</span>
+              <span class="font-semibold text-gray-900">{{ $booking->jam_mulai }} - {{ $booking->jam_selesai }}</span>
+            </div>
+            @endif
           </div>
         </div>
+
+        <!-- Payment History -->
+        @if($payment)
+        <div class="mb-8">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Riwayat Pembayaran</h2>
+          <div class="space-y-3 bg-gray-50 p-4 rounded">
+            <div class="flex justify-between">
+              <span class="text-gray-700">Transaction ID:</span>
+              <span class="font-semibold text-gray-900 text-sm">{{ $payment->transaction_id ?? 'N/A' }}</span>
+            </div>
+            <div class="flex justify-between border-t pt-3">
+              <span class="text-gray-700">Status Pembayaran:</span>
+              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                {{ ucfirst($payment->payment_status) }}
+              </span>
+            </div>
+            <div class="flex justify-between border-t pt-3">
+              <span class="text-gray-700">Jumlah:</span>
+              <span class="font-semibold text-gray-900">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+            </div>
+            <div class="flex justify-between border-t pt-3">
+              <span class="text-gray-700">Metode Pembayaran:</span>
+              <span class="font-semibold text-gray-900">{{ ucfirst(str_replace('_', ' ', $payment->payment_method ?? 'N/A')) }}</span>
+            </div>
+            @if($payment->payment_at)
+            <div class="flex justify-between border-t pt-3">
+              <span class="text-gray-700">Waktu Pembayaran:</span>
+              <span class="font-semibold text-gray-900">{{ $payment->payment_at->format('d M Y H:i:s') }}</span>
+            </div>
+            @endif
+          </div>
+        </div>
+        @endif
 
         <!-- What's Next -->
         <div class="mb-8">

@@ -74,9 +74,15 @@ class BokingController extends Controller
         $durasi = ($jamSelesai - $jamMulai) / 3600; // durasi dalam jam
         $totalHarga = $lapangan->harga * $durasi;
 
+        // Generate unique order ID for Midtrans
+        $orderId = 'BOOKING-' . $validatedData['lapangan_id'] . '-' . time() . '-' . random_int(10000, 99999);
+
         // Simpan data booking ke database dengan status pending
         $validatedData['customer_id'] = Auth::check() ? Auth::id() : null;
         $validatedData['total_harga'] = $totalHarga;
+        $validatedData['harga_per_jam'] = $lapangan->harga;  // Tambahkan harga per jam
+        $validatedData['durasi'] = $durasi;  // Tambahkan durasi
+        $validatedData['order_id'] = $orderId;  // Tambahkan order ID
         $validatedData['status'] = 'pending';  // Status awal: pending
 
         $booking = Boking::create($validatedData);
@@ -84,6 +90,7 @@ class BokingController extends Controller
         // Simpan juga ke session untuk ditampilkan di payment page
         session(['booking_data' => $validatedData]);
         session(['booking_id' => $booking->id]);  // Simpan ID untuk tracking
+        session(['order_id' => $orderId]);  // Simpan order_id untuk tracking
 
         return redirect()->route('show.payment')->with('success', 'Lanjut ke pembayaran!');
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InputLapanganController;
 use App\Http\Controllers\MidtransController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -105,9 +106,7 @@ Route::controller(BokingController::class)->prefix('boking')->group(function () 
 });
 
 // Payment success page
-Route::get('/payment/success', function() {
-    return view('payment.success');
-})->name('payment.success');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
 
 
 Route::controller(MidtransController::class)->prefix('midtrans')->group(function () {
@@ -115,7 +114,10 @@ Route::controller(MidtransController::class)->prefix('midtrans')->group(function
     Route::get('/debug', 'debugConfig')->name('midtrans.debug');
     Route::post('/token/{order}', 'token')->name('midtrans.token');
     Route::post('/notification', 'notification')->name('midtrans.notification');
-
+    
+    // Testing endpoints (development only)
+    Route::get('/test-webhook', 'testWebhook')->name('midtrans.test-webhook');
+    Route::get('/manual-confirm', 'manualConfirm')->name('midtrans.manual-confirm');
 });
 
 // Availability endpoints

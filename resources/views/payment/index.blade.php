@@ -37,7 +37,11 @@
           <div class="border-b pb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
             <p class="text-lg font-semibold text-gray-900">
-              {{ \Carbon\Carbon::parse($bookingData['tanggal'])->format('l, d F Y') }}
+              @if(!empty($bookingData['tanggal']))
+                {{ \Carbon\Carbon::parse($bookingData['tanggal'])->format('l, d F Y') }}
+              @else
+                -
+              @endif
             </p>
           </div>
 
@@ -45,7 +49,7 @@
           <div class="border-b pb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1">Waktu Booking</label>
             <p class="text-lg font-semibold text-gray-900">
-              {{ $bookingData['jam_mulai'] }} - {{ $bookingData['jam_selesai'] }}
+              {{ $bookingData['jam_mulai'] ?? '-' }} - {{ $bookingData['jam_selesai'] ?? '-' }}
               <span class="text-sm text-gray-600 ml-2">({{ $bookingData['durasi'] ?? 0 }} jam)</span>
             </p>
           </div>
@@ -79,7 +83,7 @@
         <div class="space-y-3">
           <div class="flex justify-between items-center pb-3 border-b">
             <span class="text-gray-700">Harga per jam</span>
-            <span class="font-semibold text-gray-900">Rp {{ number_format($bookingData['harga_per_jam'], 0, ',', '.') }}</span>
+            <span class="font-semibold text-gray-900">Rp {{ number_format($bookingData['harga_per_jam'] ?? 0, 0, ',', '.') }}</span>
           </div>
           
           <div class="flex justify-between items-center pb-3 border-b">
@@ -89,7 +93,7 @@
 
           <div class="flex justify-between items-center pt-3">
             <span class="text-lg font-semibold text-gray-900">Total</span>
-            <span class="text-2xl font-bold text-blue-600">Rp {{ number_format($bookingData['total_harga'], 0, ',', '.') }}</span>
+            <span class="text-2xl font-bold text-blue-600">Rp {{ number_format($bookingData['total_harga'] ?? 0, 0, ',', '.') }}</span>
           </div>
         </div>
       </div>
@@ -122,8 +126,15 @@
   </div>
 
   <script>
-    // Generate order ID dari timestamp + random
-    const orderId = 'BOOKING-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+    // Gunakan order_id dari server (session) untuk menghindari duplikasi
+    const orderId = '{{ session("order_id") ?? "" }}';
+    const bookingDataRaw = {!! json_encode($bookingData ?? []) !!};
+    
+    // Validasi orderId exist
+    if (!orderId) {
+      console.error('Order ID tidak ditemukan di session');
+      alert('Data pemesanan tidak valid. Silakan lakukan pemesanan ulang.');
+    }
     
     document.getElementById('pay-button').addEventListener('click', async () => {
       try {
@@ -131,6 +142,36 @@
         payButton.disabled = true;
         payButton.textContent = 'Sedang memproses...';
         
+        console.log('Order ID:', orderId);
+        console.log('Booking Data:', bookingDataRaw);
+        
+        // Validasi booking data
+        if (!bookingDataRaw || Object.keys(bookingDataRaw).length === 0) {
+          alert('Data booking tidak ditemukan. Silakan ulangi pemesanan.');
+          payButton.disabled = false;
+          payButton.textContent = 'Lanjut ke Pembayaran';
+          return;
+        }
+
+        // Validasi order ID
+        if (!orderId) {
+          alert('Order ID tidak ditemukan. Silakan ulangi pemesanan.');
+          payButton.disabled = false;
+          payButton.textContent = 'Lanjut ke Pembayaran';
+          return;
+        }
+
+        const totalHarga = parseInt('{{ intval($bookingData["total_harga"] ?? 0) }}') || 0;
+        
+        if (totalHarga === 0) {
+          alert('Total harga tidak valid. Silakan periksa kembali booking Anda.');
+          payButton.disabled = false;
+          payButton.textContent = 'Lanjut ke Pembayaran';
+          return;
+        }
+
+        console.log('Total Harga:', totalHarga);
+
         // Request token dari server
         const res = await fetch("/api/payment-token", {
           method: "POST",
@@ -140,12 +181,21 @@
           },
           body: JSON.stringify({
             order_id: orderId,
-            gross_amount: {{ intval($bookingData['total_harga']) }},
-            booking_data: {!! json_encode($bookingData) !!}
+            gross_amount: totalHarga,
+            booking_data: bookingDataRaw
           })
         });
 
+        console.log('Payment API Response Status:', res.status);
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          console.error('API Error Response:', errorData);
+          throw new Error(`HTTP error! status: ${res.status} - ${errorData.error || 'Unknown error'}`);
+        }
+
         const data = await res.json();
+        console.log('Payment Token Response:', data);
 
         if (!data.token) {
           console.error('API Response Error:', data);
@@ -159,8 +209,26 @@
         window.snap.pay(data.token, {
           onSuccess: function(result) {
             console.log('Pembayaran sukses:', result);
-            // Redirect ke halaman sukses
-            window.location.href = '/payment/success?order_id=' + orderId;
+            
+            // Auto-trigger webhook untuk update database
+            console.log('Triggering webhook for order_id:', orderId);
+            fetch('/midtrans/test-webhook?order_id=' + orderId, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(res => res.json())
+            .then(data => {
+              console.log('Webhook triggered:', data);
+              // Redirect ke success page setelah webhook triggered
+              window.location.href = '/payment/success?order_id=' + orderId;
+            })
+            .catch(err => {
+              console.error('Webhook error:', err);
+              // Tetap redirect meski webhook error
+              window.location.href = '/payment/success?order_id=' + orderId;
+            });
           },
           onPending: function(result) {
             console.log('Pembayaran pending:', result);

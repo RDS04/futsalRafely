@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Boking extends Model
 {
@@ -20,6 +21,9 @@ class Boking extends Model
         'customer_id',
         'lapangan_id',
         'total_harga',
+        'harga_per_jam',
+        'durasi',
+        'order_id',
         'status',
     ];
 
@@ -42,6 +46,14 @@ class Boking extends Model
     public function lapanganData(): BelongsTo
     {
         return $this->belongsTo(Lapangan::class, 'lapangan_id');
+    }
+
+    /**
+     * Relasi dengan Payment untuk tracking pembayaran
+     */
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class, 'booking_id', 'id');
     }
 
     /**
